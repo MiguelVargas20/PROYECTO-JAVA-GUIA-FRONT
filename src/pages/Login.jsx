@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, Form, Button, Card, InputGroup, Navbar, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { motion } from 'framer-motion'; // Para animaciones fluidas
+import { motion } from 'framer-motion';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -23,8 +23,15 @@ export default function Login() {
   };
 
   return (
+    // 1. Contenedor con la clase que definimos en index.css
     <div className="auth-page-bg">
-      <Navbar bg="white" expand="lg" className="border-bottom fixed-top shadow-sm px-4">
+      
+      {/* 2. Navbar: bg="transparent" y un inline style para un desenfoque sutil */}
+      <Navbar 
+        expand="lg" 
+        className="fixed-top shadow-sm px-4" 
+        style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(5px)' }}
+      >
         <Navbar.Brand as={Link} to="/" className="fw-bold text-dark" style={{ fontFamily: 'serif' }}>
           Athenaeum
         </Navbar.Brand>
@@ -34,17 +41,19 @@ export default function Login() {
         </Nav>
       </Navbar>
 
-      <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', paddingTop: '80px' }}>
+      {/* 3. Contenedor Centrado: Eliminamos paddingTop excesivo para centrar mejor */}
+      <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
         <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ width: '100%', maxWidth: '500px' }}
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          style={{ width: '100%', maxWidth: '420px', zIndex: 1 }}
         >
-          <Card className="ath-card shadow-lg border-0 p-4" style={{ borderRadius: '25px', background: 'var(--glass-bg)' }}>
-            <Card.Body>
+          {/* 4. La Card: 'ath-card' da el efecto hover y 'var(--glass-bg)' la transparencia blanca */}
+          <Card className="ath-card shadow-lg border-0 p-2" style={{ borderRadius: '25px', background: 'var(--glass-bg)' }}>
+            <Card.Body className="p-4">
               <div className="text-center mb-4">
-                <h2 className="fw-bold text-dark">Bienvenido</h2>
+                <h2 className="fw-bold text-dark" style={{ letterSpacing: '-1px' }}>Bienvenido</h2>
                 <p className="text-muted small">Accede al repositorio académico</p>
               </div>
 
@@ -54,9 +63,11 @@ export default function Login() {
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-bold text-secondary">Correo Electrónico</Form.Label>
                   <InputGroup>
-                    <InputGroup.Text className="bg-white border-end-0"><i className="bi bi-envelope"></i></InputGroup.Text>
+                    <InputGroup.Text className="bg-white border-end-0 text-muted">
+                      <i className="bi bi-envelope"></i>
+                    </InputGroup.Text>
                     <Form.Control 
-                      className="border-start-0 py-2" 
+                      className="border-start-0 py-2 shadow-none" 
                       type="email" 
                       placeholder="usuario@athenaeum.edu" 
                       onChange={(e) => setEmail(e.target.value)}
@@ -66,13 +77,13 @@ export default function Login() {
                 </Form.Group>
 
                 <Form.Group className="mb-4">
-                  <div className="d-flex justify-content-between">
-                    <Form.Label className="small fw-bold text-secondary">Contraseña</Form.Label>
-                  </div>
+                  <Form.Label className="small fw-bold text-secondary">Contraseña</Form.Label>
                   <InputGroup>
-                    <InputGroup.Text className="bg-white border-end-0"><i className="bi bi-lock"></i></InputGroup.Text>
+                    <InputGroup.Text className="bg-white border-end-0 text-muted">
+                      <i className="bi bi-lock"></i>
+                    </InputGroup.Text>
                     <Form.Control 
-                      className="border-start-0 py-2" 
+                      className="border-start-0 py-2 shadow-none" 
                       type="password" 
                       placeholder="••••••••" 
                       onChange={(e) => setPassword(e.target.value)}
@@ -81,13 +92,26 @@ export default function Login() {
                   </InputGroup>
                 </Form.Group>
 
-                <Button variant="dark" type="submit" className="w-100 py-2 fw-bold" style={{ borderRadius: '12px' }} disabled={loading}>
-                  {loading ? 'Cargando...' : 'Entrar'}
+                <Button 
+                  variant="dark" 
+                  type="submit" 
+                  className="w-100 py-2 fw-bold btn-dark-ath" // Usamos la clase que creamos en CSS
+                  style={{ borderRadius: '12px', fontSize: '0.9rem' }} 
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Cargando...
+                    </>
+                  ) : 'Iniciar Sesión'}
                 </Button>
               </Form>
 
               <div className="text-center mt-4">
-                <p className="small text-muted">¿Nuevo aquí? <Link to="/register" className="text-dark fw-bold text-decoration-none">Crea una cuenta</Link></p>
+                <p className="small text-muted">
+                  ¿Nuevo aquí? <Link to="/register" className="text-dark fw-bold text-decoration-none">Crea una cuenta</Link>
+                </p>
               </div>
             </Card.Body>
           </Card>
