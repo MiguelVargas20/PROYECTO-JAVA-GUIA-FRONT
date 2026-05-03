@@ -1,10 +1,17 @@
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 
 const AppNavbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const getRoleClass = (role) => {
+    if (role === 'ADMIN') return 'role-admin';
+    if (role === 'MODERATOR') return 'role-moderator';
+    return 'role-reader';
+  };
 
   const handleLogout = () => {
     logout();
@@ -12,42 +19,58 @@ const AppNavbar = () => {
   };
 
   return (
-    <Navbar bg="white" expand="lg" className="shadow-sm sticky-top py-3">
+    <Navbar expand="lg" className="navbar-light bg-white border-bottom ath-navbar py-3 sticky-top">
       <Container>
-        <Navbar.Brand as={Link} to="/" className="fw-bold fs-4 text-primary">
-          📚 ATHENAEUM
+        {/* Logo con el estilo exacto que pediste */}
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+          <span className="me-2">📚</span>
+          <span className="fw-bold text-navy" style={{ letterSpacing: '-0.5px' }}>
+            ATHENAEUM
+          </span>
         </Navbar.Brand>
-        
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        
-        <Navbar.Collapse id="basic-navbar-nav">
+
+        <Navbar.Toggle aria-controls="navbarNav" />
+
+        <Navbar.Collapse id="navbarNav">
           <Nav className="ms-auto align-items-center">
-            <Nav.Link as={Link} to="/" className="mx-2">Inicio</Nav.Link>
-            
+            <Nav.Link as={Link} to="/" className="px-3">Inicio</Nav.Link>
+
             {user ? (
               <>
-                <Nav.Link as={Link} to="/perfil" className="mx-2">Mi Perfil</Nav.Link>
+                {/* Badge de Rol Dinámico */}
+                <span className={`role-badge ${getRoleClass(user.role)} me-3`}>
+                  {user.role || 'LECTOR'}
+                </span>
+                
+                <Nav.Link as={Link} to="/perfil" className="px-3">Mi Perfil</Nav.Link>
+                
+                {user.role === 'ADMIN' && (
+                  <Nav.Link as={Link} to="/admin" className="text-danger fw-bold px-3">
+                    Panel Admin
+                  </Nav.Link>
+                )}
+
                 <Button 
                   variant="outline-danger" 
                   size="sm" 
-                  onClick={handleLogout}
-                  className="ms-2"
+                  onClick={handleLogout} 
+                  className="ms-3 rounded-pill px-3"
                 >
-                  Cerrar Sesión
+                  Salir
                 </Button>
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/login" className="mx-2 text-dark">
-                  Iniciar Sesión
+                {/* Opciones para visitantes: Estilo exacto solicitado */}
+                <Nav.Link as={Link} to="/login" className="px-3">
+                  Entrar
                 </Nav.Link>
                 <Button 
                   as={Link} 
                   to="/register" 
-                  variant="primary" 
-                  className="ms-lg-3 px-4 rounded-pill"
+                  className="btn-navy text-white px-4 ms-lg-2 rounded-pill shadow-sm"
                 >
-                  Registrarse
+                  Unirse
                 </Button>
               </>
             )}

@@ -1,165 +1,88 @@
-import { useState } from 'react';
+import { Container, Form, Button, Card, InputGroup, Navbar, Nav, Row, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useForm } from "../hooks/useForm"; // ✅ Correcto: Apunta a hooks
+import { useForm } from "../hooks/useForm"; 
 import { registerSchema } from '../schemas/authSchemas';
-
-function FieldError({ msg }) {
-  if (!msg) return null;
-  return <p style={{ color: 'var(--accent)', fontSize: '.73rem', marginTop: '.3rem' }}>{msg}</p>;
-}
+import { motion } from 'framer-motion';
 
 export default function Register() {
-  const navigate              = useNavigate();
-  const { register, loading } = useAuth();
-  const [showPass, setShowPass] = useState(false);
-  const [apiError, setApiError] = useState('');
-
+  const navigate = useNavigate();
+  const { register: registerUser, loading } = useAuth();
   const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useForm(
     { fullName: '', email: '', password: '', confirmPassword: '', libraryCard: '', terms: false },
     registerSchema
   );
 
   const onSubmit = async (vals) => {
-    setApiError('');
-    const result = await register(vals);
-    if (result.success) {
-      navigate('/login');
-    } else {
-      setApiError(result.message);
-    }
+    const result = await registerUser(vals);
+    if (result?.success) navigate('/login');
   };
 
   return (
-    <div className="register-page">
-      {/* Navbar */}
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0,
-        background: '#fff', borderBottom: '1px solid var(--border)',
-        padding: '0 2rem', height: '62px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        zIndex: 100,
-      }}>
-        <Link to="/" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.3rem', color: 'var(--navy)' }}>
-          Athenaeum
-        </Link>
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
-          <Link to="/"         style={{ color: 'var(--text-mid)', fontSize: '.875rem' }}>Home</Link>
-          <Link to="/login"    style={{ color: 'var(--text-mid)', fontSize: '.875rem' }}>Login</Link>
-          <Link to="/register" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '.875rem', borderBottom: '2px solid var(--navy)', paddingBottom: '2px' }}>Register</Link>
-        </div>
-      </nav>
+    <div className="auth-page-bg">
+      <Navbar bg="white" expand="lg" className="border-bottom fixed-top shadow-sm px-4">
+        <Navbar.Brand as={Link} to="/" className="fw-bold text-dark" style={{ fontFamily: 'serif' }}>Athenaeum</Navbar.Brand>
+        <Nav className="ms-auto flex-row gap-3">
+          <Nav.Link as={Link} to="/login" className="small text-muted">Ingresar</Nav.Link>
+          <Nav.Link as={Link} to="/register" className="small fw-bold text-dark border-bottom border-2 border-dark">Registro</Nav.Link>
+        </Nav>
+      </Navbar>
 
-      <div className="register-wrapper" style={{ marginTop: '62px' }}>
-        {/* Sidebar decorativo */}
-        <div className="register-sidebar">
-          <div className="sidebar-content">
-            <span className="sidebar-tag">New Membership</span>
-            <p className="sidebar-quote">
-              "Knowledge is a treasure, but practice is the key to it."
-            </p>
-            <p className="sidebar-desc">
-              Join our scholarly community and unlock access to thousands of rare manuscripts and modern archives.
-            </p>
-          </div>
-        </div>
+      <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', paddingTop: '100px', paddingBottom: '50px' }}>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }}
+          style={{ width: '100%', maxWidth: '750px' }}
+        >
+          <Card className="ath-card shadow-lg border-0 p-4" style={{ borderRadius: '25px', background: 'var(--glass-bg)' }}>
+            <Card.Body>
+              <h2 className="fw-bold text-center mb-1">Únete a Athenaeum</h2>
+              <p className="text-center text-muted small mb-4">Registro de membresía académica</p>
 
-        {/* Formulario */}
-        <div className="register-form-area">
-          <h2 className="register-title">Create your account</h2>
-          <p className="register-sub">Enter your details to register as a library member.</p>
+              <Form onSubmit={handleSubmit(onSubmit)}>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small fw-bold">Nombre Completo</Form.Label>
+                      <Form.Control name="fullName" placeholder="Juan Pérez" value={values.fullName} onChange={handleChange} onBlur={handleBlur} isInvalid={touched.fullName && !!errors.fullName} />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small fw-bold">Correo Electrónico</Form.Label>
+                      <Form.Control name="email" type="email" placeholder="usuario@athenaeum.edu" value={values.email} onChange={handleChange} onBlur={handleBlur} isInvalid={touched.email && !!errors.email} />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-          {apiError && (
-            <div style={{
-              background: '#fff5f5', border: '1px solid #fed7d7', borderRadius: 'var(--radius-sm)',
-              padding: '.75rem 1rem', fontSize: '.82rem', color: '#c53030', marginBottom: '1rem',
-            }}>
-              {apiError}
-            </div>
-          )}
+                <Row>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small fw-bold">Contraseña</Form.Label>
+                      <Form.Control name="password" type="password" placeholder="••••••••" value={values.password} onChange={handleChange} onBlur={handleBlur} isInvalid={touched.password && !!errors.password} />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small fw-bold">Confirmar</Form.Label>
+                      <Form.Control name="confirmPassword" type="password" placeholder="••••••••" value={values.confirmPassword} onChange={handleChange} onBlur={handleBlur} />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            {/* Full Name */}
-            <label className="form-label-ath">Full Name</label>
-            <div className="input-icon-wrap">
-              <span className="icon">👤</span>
-              <input className="ath-input" type="text" name="fullName"
-                placeholder="Johnathan Doe" value={values.fullName}
-                onChange={handleChange} onBlur={handleBlur} />
-              <FieldError msg={touched.fullName && errors.fullName} />
-            </div>
+                <Form.Group className="mb-4">
+                  <Form.Label className="small fw-bold">Número de Carnet (Opcional)</Form.Label>
+                  <Form.Control name="libraryCard" placeholder="LIB-0000-0000" value={values.libraryCard} onChange={handleChange} />
+                </Form.Group>
 
-            {/* Email */}
-            <label className="form-label-ath">Email Address</label>
-            <div className="input-icon-wrap">
-              <span className="icon">✉</span>
-              <input className="ath-input" type="email" name="email"
-                placeholder="name@athenaeum.edu" value={values.email}
-                onChange={handleChange} onBlur={handleBlur} />
-              <FieldError msg={touched.email && errors.email} />
-            </div>
-
-            {/* Password row */}
-            <div className="form-row">
-              <div>
-                <label className="form-label-ath">Password</label>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '.9rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)', fontSize: '.9rem', pointerEvents: 'none' }}>🔒</span>
-                  <input className="ath-input" type={showPass ? 'text' : 'password'} name="password"
-                    placeholder="••••••••" value={values.password}
-                    onChange={handleChange} onBlur={handleBlur} />
-                  <button type="button" onClick={() => setShowPass(p => !p)} style={{ position: 'absolute', right: '.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '.8rem', color: 'var(--text-light)' }}>
-                    {showPass ? '🙈' : '👁'}
-                  </button>
-                </div>
-                <FieldError msg={touched.password && errors.password} />
-              </div>
-              <div>
-                <label className="form-label-ath">Confirm Password</label>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '.9rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)', fontSize: '.9rem', pointerEvents: 'none' }}>🔒</span>
-                  <input className="ath-input" type={showPass ? 'text' : 'password'} name="confirmPassword"
-                    placeholder="••••••••" value={values.confirmPassword}
-                    onChange={handleChange} onBlur={handleBlur} />
-                </div>
-                <FieldError msg={touched.confirmPassword && errors.confirmPassword} />
-              </div>
-            </div>
-
-            {/* Library Card */}
-            <label className="form-label-ath" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-              Library Card Number
-              <span style={{ fontSize: '.7rem', color: 'var(--text-light)', fontWeight: 400 }}>OPTIONAL</span>
-            </label>
-            <div className="input-icon-wrap">
-              <span className="icon">🏛</span>
-              <input className="ath-input" type="text" name="libraryCard"
-                placeholder="LIB-0000-0000" value={values.libraryCard}
-                onChange={handleChange} onBlur={handleBlur} />
-              <FieldError msg={touched.libraryCard && errors.libraryCard} />
-            </div>
-
-            {/* Terms */}
-            <label className="terms-check">
-              <input type="checkbox" name="terms" checked={values.terms} onChange={handleChange} />
-              <span>
-                I agree to the&nbsp;<Link to="#" style={{ color: 'var(--accent)', fontWeight: 700 }}>Terms of Service</Link>
-                &nbsp;and&nbsp;<Link to="#" style={{ color: 'var(--accent)', fontWeight: 700 }}>Privacy Policy</Link>.
-              </span>
-            </label>
-            <FieldError msg={touched.terms && errors.terms} />
-
-            <button type="submit" className="btn-create" disabled={loading}>
-              {loading ? 'Creating account…' : 'Create Account'}
-            </button>
-          </form>
-
-          <p className="login-prompt">
-            Already have an account?&nbsp;
-            <Link to="/login">Login here</Link>
-          </p>
-        </div>
-      </div>
+                <Button variant="dark" type="submit" className="w-100 py-3 fw-bold" style={{ borderRadius: '12px' }} disabled={loading}>
+                  {loading ? 'Procesando...' : 'Crear mi cuenta'}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </motion.div>
+      </Container>
     </div>
   );
 }

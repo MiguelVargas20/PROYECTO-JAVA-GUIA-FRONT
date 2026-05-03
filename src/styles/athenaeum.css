@@ -163,6 +163,75 @@ a { text-decoration: none; color: inherit; }
 .login-prompt { text-align:center; margin-top:1.25rem; font-size:.82rem; color:var(--text-mid); }
 .login-prompt a { color:var(--accent); font-weight:700; }
 
+/* ══ NAVBAR CUSTOM ══════════════════════════════════════════ */
+.ath-navbar {
+    background-color: #fff !important;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.ath-navbar .nav-link {
+    font-weight: 500;
+    color: var(--text-mid) !important;
+    padding: 0.5rem 1.2rem !important;
+}
+
+.ath-navbar .nav-link:hover {
+    color: var(--navy) !important;
+}
+
+.navbar-brand {
+    font-family: var(--font-serif);
+    letter-spacing: -0.5px;
+}
+
+/* ══ FOOTER CUSTOM ══════════════════════════════════════════ */
+.ath-footer {
+    background-color: #0f172a; /* Un azul marino profundo muy profesional */
+    color: #f8fafc;
+    font-size: 0.9rem;
+}
+.footer-link {
+    color: #94a3b8 !important;
+    text-decoration: none;
+    display: block;
+    padding: 4px 0;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: #38bdf8 !important; /* Azul claro al pasar el mouse */
+}
+
+.ath-footer h5, .ath-footer h6 {
+    color: #fff !important;
+    font-family: var(--font-serif);
+}
+
+.ath-footer .footer-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.ath-footer .footer-link:hover {
+    color: var(--accent-lt) !important;
+    text-decoration: none;
+}
+
+/* ══ ROLES BADGES ═══════════════════════════════════════════ */
+.role-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.role-admin { background: #fee2e2; color: #dc2626; }
+.role-moderator { background: #fef3c7; color: #d97706; }
+.role-reader { background: #dcfce7; color: #16a34a; }
+
 /* ══ RESPONSIVE ══════════════════════════════════════════ */
 @media(max-width:1024px) {
   .hero-section,.section-arrivals,.section-collections { padding:3rem 2rem; }

@@ -7,10 +7,9 @@ const ProtectedRoute = () => {
   // Mientras se verifica si el usuario está logueado (opcional)
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Cargando...</span>
-        </div>
+      // Cambia el spinner básico por uno con el color de tu marca
+      <div className="spinner-grow text-primary" style={{ width: '3rem', height: '3rem', color: 'var(--navy) !important' }} role="status">
+        <span className="visually-hidden">Cargando...</span>
       </div>
     );
   }

@@ -1,133 +1,98 @@
 import { useState } from 'react';
+import { Container, Form, Button, Card, InputGroup, Navbar, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useForm } from "../hooks/useForm"; // ✅ Correcto
-import { loginSchema } from '../schemas/authSchemas';
-
-function FieldError({ msg }) {
-  if (!msg) return null;
-  return <p style={{ color: 'var(--accent)', fontSize: '.73rem', marginTop: '.3rem' }}>{msg}</p>;
-}
+import { motion } from 'framer-motion'; // Para animaciones fluidas
 
 export default function Login() {
-  const navigate           = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login, loading } = useAuth();
-  const [showPass, setShowPass] = useState(false);
+  const navigate = useNavigate();
   const [apiError, setApiError] = useState('');
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useForm(
-    { email: '', password: '', remember: false },
-    loginSchema
-  );
-
-  const onSubmit = async (vals) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setApiError('');
-    const result = await login({ email: vals.email, password: vals.password });
-    if (result.success) {
+    try {
+      await login(email, password);
       navigate('/');
-    } else {
-      setApiError(result.message);
+    } catch (error) {
+      setApiError("Credenciales incorrectas. Verifica tu acceso.");
     }
   };
 
   return (
-    <div className="login-page">
-      {/* Mini Navbar */}
-      <nav style={{
-        position: 'absolute', top: 0, left: 0, right: 0,
-        background: 'transparent', padding: '1.25rem 2rem',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        zIndex: 10,
-      }}>
-        <Link to="/" style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.3rem', color: '#fff' }}>
+    <div className="auth-page-bg">
+      <Navbar bg="white" expand="lg" className="border-bottom fixed-top shadow-sm px-4">
+        <Navbar.Brand as={Link} to="/" className="fw-bold text-dark" style={{ fontFamily: 'serif' }}>
           Athenaeum
-        </Link>
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
-          <Link to="/"         style={{ color: 'rgba(255,255,255,.75)', fontSize: '.875rem' }}>Home</Link>
-          <Link to="/login"    style={{ color: '#fff', fontWeight: 700, fontSize: '.875rem', borderBottom: '2px solid #fff', paddingBottom: '2px' }}>Login</Link>
-          <Link to="/register" style={{ color: 'rgba(255,255,255,.75)', fontSize: '.875rem' }}>Register</Link>
-        </div>
-      </nav>
+        </Navbar.Brand>
+        <Nav className="ms-auto flex-row gap-3">
+          <Nav.Link as={Link} to="/login" className="small fw-bold text-dark border-bottom border-2 border-dark">Ingresar</Nav.Link>
+          <Nav.Link as={Link} to="/register" className="small text-muted">Registro</Nav.Link>
+        </Nav>
+      </Navbar>
 
-      <div className="login-card">
-        <h1 className="login-title">Welcome Back</h1>
-        <p className="login-sub">Sign in to access your library account</p>
+      <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh', paddingTop: '80px' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{ width: '100%', maxWidth: '500px' }}
+        >
+          <Card className="ath-card shadow-lg border-0 p-4" style={{ borderRadius: '25px', background: 'var(--glass-bg)' }}>
+            <Card.Body>
+              <div className="text-center mb-4">
+                <h2 className="fw-bold text-dark">Bienvenido</h2>
+                <p className="text-muted small">Accede al repositorio académico</p>
+              </div>
 
-        {/* Error de la API */}
-        {apiError && (
-          <div style={{
-            background: '#fff5f5', border: '1px solid #fed7d7', borderRadius: 'var(--radius-sm)',
-            padding: '.75rem 1rem', fontSize: '.82rem', color: '#c53030', marginBottom: '1rem',
-          }}>
-            {apiError}
-          </div>
-        )}
+              {apiError && <div className="alert alert-danger py-2 small text-center">{apiError}</div>}
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* Email */}
-          <label className="form-label-ath">Email or Username</label>
-          <div className="input-icon-wrap">
-            <span className="icon">✉</span>
-            <input
-              className="ath-input"
-              type="text"
-              name="email"
-              placeholder="librarian@athenaeum.edu"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FieldError msg={touched.email && errors.email} />
-          </div>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-bold text-secondary">Correo Electrónico</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text className="bg-white border-end-0"><i className="bi bi-envelope"></i></InputGroup.Text>
+                    <Form.Control 
+                      className="border-start-0 py-2" 
+                      type="email" 
+                      placeholder="usuario@athenaeum.edu" 
+                      onChange={(e) => setEmail(e.target.value)}
+                      required 
+                    />
+                  </InputGroup>
+                </Form.Group>
 
-          {/* Password */}
-          <div className="form-label-row" style={{ marginBottom: '.4rem' }}>
-            <label className="form-label-ath" style={{ margin: 0 }}>Password</label>
-            <Link to="/forgot-password" className="forgot-link">Forgot password?</Link>
-          </div>
-          <div className="input-icon-wrap" style={{ position: 'relative' }}>
-            <span className="icon">🔒</span>
-            <input
-              className="ath-input"
-              type={showPass ? 'text' : 'password'}
-              name="password"
-              placeholder="••••••••"
-              value={values.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              style={{ paddingRight: '2.5rem' }}
-            />
-            <button type="button" onClick={() => setShowPass(p => !p)} style={{
-              position: 'absolute', right: '.75rem', top: '50%', transform: 'translateY(-50%)',
-              background: 'none', border: 'none', cursor: 'pointer', fontSize: '.85rem', color: 'var(--text-light)',
-            }}>
-              {showPass ? '🙈' : '👁'}
-            </button>
-            <FieldError msg={touched.password && errors.password} />
-          </div>
+                <Form.Group className="mb-4">
+                  <div className="d-flex justify-content-between">
+                    <Form.Label className="small fw-bold text-secondary">Contraseña</Form.Label>
+                  </div>
+                  <InputGroup>
+                    <InputGroup.Text className="bg-white border-end-0"><i className="bi bi-lock"></i></InputGroup.Text>
+                    <Form.Control 
+                      className="border-start-0 py-2" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      onChange={(e) => setPassword(e.target.value)}
+                      required 
+                    />
+                  </InputGroup>
+                </Form.Group>
 
-          {/* Remember */}
-          <label className="check-label">
-            <input type="checkbox" name="remember" checked={values.remember} onChange={handleChange} />
-            Keep me logged in for 30 days
-          </label>
+                <Button variant="dark" type="submit" className="w-100 py-2 fw-bold" style={{ borderRadius: '12px' }} disabled={loading}>
+                  {loading ? 'Cargando...' : 'Entrar'}
+                </Button>
+              </Form>
 
-          <button type="submit" className="btn-signin" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign In →'}
-          </button>
-        </form>
-
-        <div className="or-divider">or continue with</div>
-        <div className="social-btns">
-          <button className="btn-social">🎓 University ID</button>
-          <button className="btn-social">🏛 ORCID</button>
-        </div>
-
-        <p className="register-prompt">
-          Don't have an account yet?&nbsp;
-          <Link to="/register">Register here</Link>
-        </p>
-      </div>
+              <div className="text-center mt-4">
+                <p className="small text-muted">¿Nuevo aquí? <Link to="/register" className="text-dark fw-bold text-decoration-none">Crea una cuenta</Link></p>
+              </div>
+            </Card.Body>
+          </Card>
+        </motion.div>
+      </Container>
     </div>
   );
 }

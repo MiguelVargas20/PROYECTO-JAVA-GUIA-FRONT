@@ -3,52 +3,45 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-dark text-white pt-5 pb-4 mt-auto">
+    <footer className="ath-footer py-5 mt-auto">
       <Container>
         <Row>
-          {/* Columna 1: Info de la Marca */}
-          <Col md={4} className="mb-4">
-            <h5 className="text-uppercase fw-bold mb-4 text-primary">Athenaeum</h5>
-            <p className="text-muted">
-              Tu biblioteca digital conectada a Java Spring y MongoDB. 
-              Explora, aprende y gestiona tus lecturas favoritas.
+          {/* Columna 1: Info de la Marca - Ocupa 4 espacios en pantallas grandes */}
+          <Col lg={4} mb={4} className="mb-lg-0">
+            <h5 className="fw-bold mb-3 text-white">Athenaeum</h5>
+            <p className="text-white-50" style={{ maxWidth: '300px' }}>
+              Gestión profesional de bibliotecas con Java Spring y MongoDB. 
+              Explora, aprende y gestiona tus lecturas favoritas en nuestro ecosistema digital.
             </p>
           </Col>
 
-          {/* Columna 2: Enlaces Rápidos */}
-          <Col md={2} className="mb-4">
-            <h6 className="fw-bold mb-4">Explorar</h6>
+          {/* Columna 3: Soporte - 2 espacios */}
+          <Col xs={6} lg={2} className="mb-4 mb-lg-0">
+            <h6 className="fw-bold text-uppercase small mb-3">Soporte</h6>
             <ul className="list-unstyled">
-              <li className="mb-2"><Link to="/" className="text-muted text-decoration-none">Inicio</Link></li>
-              <li className="mb-2"><Link to="/login" className="text-muted text-decoration-none">Login</Link></li>
-              <li className="mb-2"><Link to="/register" className="text-muted text-decoration-none">Registro</Link></li>
+              <li><Link to="/faq" className="footer-link">FAQ</Link></li>
+              <li><Link to="/ayuda" className="footer-link">Ayuda</Link></li>
+              <li><Link to="/terminos" className="footer-link">Términos de servicio</Link></li>
             </ul>
           </Col>
 
-          {/* Columna 3: Soporte */}
-          <Col md={3} className="mb-4">
-            <h6 className="fw-bold mb-4">Soporte</h6>
-            <ul className="list-unstyled">
-              <li className="mb-2"><span className="text-muted">FAQ</span></li>
-              <li className="mb-2"><span className="text-muted">Ayuda</span></li>
-              <li className="mb-2"><span className="text-muted">Términos de servicio</span></li>
+          {/* Columna 4: Contacto - 4 espacios */}
+          <Col lg={4}>
+            <h6 className="fw-bold text-uppercase small mb-3">Contacto</h6>
+            <ul className="list-unstyled text-white-50">
+              <li className="mb-2">📍 Funza, Cundinamarca, Colombia</li>
+              <li className="mb-2">✉️ soporte@athenaeum.com</li>
+              <li>📞 +57 123 456 7890</li>
             </ul>
-          </Col>
-
-          {/* Columna 4: Contacto */}
-          <Col md={3} className="mb-4">
-            <h6 className="fw-bold mb-4">Contacto</h6>
-            <p className="text-muted mb-2 small">📍 Funza, Cundinamarca, Colombia</p>
-            <p className="text-muted mb-2 small">📧 soporte@athenaeum.com</p>
-            <p className="text-muted mb-0 small">📞 +57 123 456 7890</p>
           </Col>
         </Row>
-        
-        <hr className="bg-secondary" />
-        
-        <Row className="pt-2">
+
+        {/* Separador sutil */}
+        <hr className="my-4 opacity-10" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+
+        <Row>
           <Col className="text-center">
-            <p className="text-muted small">
+            <p className="text-white-50 small mb-0">
               © {new Date().getFullYear()} ATHENAEUM Project. Desarrollado con React + Vite.
             </p>
           </Col>

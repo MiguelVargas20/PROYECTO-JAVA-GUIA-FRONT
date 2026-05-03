@@ -1,3 +1,4 @@
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -24,6 +25,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  
 
   @media (max-width: 1024px) {
     font-size: 16px;
@@ -55,10 +58,8 @@ body {
 }
 
 #root {
-  width: 1126px;
   max-width: 100%;
   margin: 0 auto;
-  text-align: center;
   border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
@@ -109,3 +110,38 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+/* Efecto de elevación para las tarjetas */
+.hover-up {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-up:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Animación para las imágenes de libros */
+.img-container:hover .book-card-img {
+  transform: scale(1.05);
+}
+
+/* Botones personalizados */
+.btn-primary {
+  background-color: var(--navy) !important;
+  border-color: var(--navy) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--navy-dark) !important;
+}
+
+/* Estilo para el Hero */
+.hero-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #fff 0%, var(--light-bg) 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+}
+
