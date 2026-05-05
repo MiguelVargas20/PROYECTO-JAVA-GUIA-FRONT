@@ -42,6 +42,10 @@ const AppNavbar = () => {
                   {user.role || 'LECTOR'}
                 </span>
                 
+                <Nav.Link as={Link} to="/libros" className="px-3">
+                  Libros
+                </Nav.Link>
+                
                 <Nav.Link as={Link} to="/perfil" className="px-3">Mi Perfil</Nav.Link>
                 
                 {user.role === 'ADMIN' && (
@@ -65,6 +69,7 @@ const AppNavbar = () => {
                 <Nav.Link as={Link} to="/login" className="px-3">
                   Entrar
                 </Nav.Link>
+
                 <Button 
                   as={Link} 
                   to="/register" 

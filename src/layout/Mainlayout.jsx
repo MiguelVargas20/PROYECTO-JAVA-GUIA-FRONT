@@ -1,21 +1,16 @@
+// src/layout/MainLayout.jsx
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // Asegúrate de que este archivo exista
-import Footer from '../components/Footer'; // Asegúrate de que este archivo exista
-import { Container } from 'react-bootstrap';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
-const MainLayout = () => {
+export default function MainLayout() {
   return (
-    <div className="main-layout d-flex flex-column min-vh-100">
+    <>
       <Navbar />
-      
-      <main className="flex-grow-1">
-        {/* Aquí se renderiza el Home */}
-        <Outlet />
+      <main>
+        <Outlet /> {/* <--- AQUÍ se renderizará Libros.jsx */}
       </main>
-
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default MainLayout;
+}
