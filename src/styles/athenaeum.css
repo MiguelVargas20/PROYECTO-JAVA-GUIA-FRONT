@@ -181,8 +181,8 @@ a { text-decoration: none; color: inherit; }
   .form-row { grid-template-columns:1fr; }
 }
 
-/* ══ AUTH PAGE BACKGROUND ═══════════════════════════════ */
-/* Fondo para Login y Register - fondo claro con efecto sutil */
+/* ══ AUTH PAGE BACKGROUND ════════════════════════════════
+   Fondo compartido para Login y Register                  */
 .auth-page-bg {
   min-height: 100vh;
   background-color: #f0f2f5;
@@ -190,4 +190,20 @@ a { text-decoration: none; color: inherit; }
     radial-gradient(circle at 15% 50%, rgba(15,30,46,0.06) 0%, transparent 50%),
     radial-gradient(circle at 85% 20%, rgba(192,85,42,0.06) 0%, transparent 50%);
   position: relative;
+}
+
+/* ══ PERFIL ══════════════════════════════════════════════ */
+.campo-perfil {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 0.7rem 1rem !important;
+  font-size: 0.9rem !important;
+  color: #1e293b !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+.campo-perfil:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1) !important;
+  background: #fff !important;
 }
