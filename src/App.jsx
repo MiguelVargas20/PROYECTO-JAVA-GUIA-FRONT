@@ -32,7 +32,7 @@ export default function App() {
             <Route path="/login"    element={<Login />}    />
             <Route path="/register" element={<Register />} />
           </Route>
-
+ 
           {/* ── Rutas protegidas (requieren sesión) ── */}
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
