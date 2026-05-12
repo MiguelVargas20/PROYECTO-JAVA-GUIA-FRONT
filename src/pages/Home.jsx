@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Button } from 'react-bootstrap'; 
 import { useAuth } from '../context/AuthContext'; 
 import { booksService } from '../services/booksService';
-import BookCard from '../components/BookCard';
+import LibroCard from '../components/LibroCard';
 
 /* ── Datos de prueba (Mocks) en español ── */
 const MOCK_BOOKS = [
@@ -139,7 +139,7 @@ export default function Home() {
 
         <div className="books-grid">
           {books.map(book => (
-            <BookCard key={book.id} book={book} />
+            <LibroCard key={book.id} book={book} />
           ))}
         </div>
       </section>

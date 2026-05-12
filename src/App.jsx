@@ -11,6 +11,7 @@ import Register     from './pages/Register';
 import Libros       from './pages/Libros';
 import LibroDetalle from './pages/LibroDetalle';
 import Perfil       from './pages/Perfil';
+import CrearLibro    from './pages/CrearLibro';
 
 import './App.css';
 
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="/dashboard"     element={<div>Dashboard</div>}     />
               <Route path="/perfil"        element={<Perfil />}               />
               <Route path="/mis-prestamos" element={<div>Mis Préstamos</div>} />
+              <Route path="/crear" element={<CrearLibro />} />
             </Route>
           </Route>
 

@@ -6,26 +6,38 @@ export const AuthContext = createContext();
 /**
  * SESIÓN EN LOCALSTORAGE:
  *   ath_token    → JWT string
- *   ath_username → email/username del usuario
- *   ath_roles    → JSON.stringify([{ nombre: 'ADMIN' }])
+ *   ath_username → username del usuario
+ *   ath_roles    → JSON.stringify(["LECTOR"])
+ *   ath_userid   → id del usuario (extraído del JWT)
  *
  * RESPUESTA DEL BACK en /api/auth/login:
- *   { token, username, roles: [{ nombre }] }
+ *   { token, username, roles: ["LECTOR"] }
  *
- * NOTA: el perfil completo (nombre, apellido, etc.) se obtiene
- *   aparte con GET /api/usuarios/correo/{username}
- *   cuando se cargue la vista de perfil.
+ * El JWT contiene: { sub: username, roles, nombre, apellido, id }
+ * Extraemos el id decodificando el payload del JWT en el front.
  */
+
+/** Decodifica el payload del JWT sin librerías externas */
+function decodeJwtPayload(token) {
+  try {
+    const base64 = token.split('.')[1];
+    const json = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
 export const AuthProvider = ({ children }) => {
 
-  // Al montar, revisar si ya hay sesión guardada
   const [user, setUser] = useState(() => {
     try {
       const token    = localStorage.getItem('ath_token');
       const username = localStorage.getItem('ath_username');
       const roles    = JSON.parse(localStorage.getItem('ath_roles') || '[]');
-      if (token && username) return { token, username, roles };
-    } catch { /* si falla el parse, ignorar */ }
+      const userId   = localStorage.getItem('ath_userid');
+      if (token && username) return { token, username, roles, userId };
+    } catch { }
     return null;
   });
 
@@ -38,17 +50,23 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const { data } = await authApi.login(username, password);
-      // data = { token: "eyJ...", username: "juan@...", roles: [{nombre:"ADMIN"}] }
+      // data = { token, username, roles: ["LECTOR"] }
+
+      // Decodificar JWT para extraer el id del usuario
+      const payload = decodeJwtPayload(data.token);
+      const userId  = payload?.id || null;
 
       const sessionUser = {
         token:    data.token,
         username: data.username,
         roles:    data.roles,
+        userId,               // ← id del usuario desde el JWT
       };
 
       localStorage.setItem('ath_token',    data.token);
       localStorage.setItem('ath_username', data.username);
       localStorage.setItem('ath_roles',    JSON.stringify(data.roles));
+      if (userId) localStorage.setItem('ath_userid', userId);
 
       setUser(sessionUser);
       return { success: true };
@@ -67,21 +85,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('ath_token');
     localStorage.removeItem('ath_username');
     localStorage.removeItem('ath_roles');
+    localStorage.removeItem('ath_userid');
     setUser(null);
   };
 
   // ── HELPERS DE ROL ───────────────────────────────────────
-  // Roles vienen como [{ nombre: 'ADMIN' }] o a veces como strings
   const hasRole = (roleName) =>
-    user?.roles?.some(r =>
-      (r?.nombre ?? r) === roleName
-    ) ?? false;
+    user?.roles?.some(r => (r?.nombre ?? r) === roleName) ?? false;
 
-  const isAdmin = () => hasRole('ADMIN');
+  const isAdmin = () => hasRole('ADMINISTRADOR');
 
   return (
     <AuthContext.Provider value={{
-      user,               // { token, username, roles }
+      user,               // { token, username, roles, userId }
       loading,
       error,
       isAuthenticated: !!user,

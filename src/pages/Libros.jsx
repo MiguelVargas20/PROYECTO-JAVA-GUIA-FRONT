@@ -31,7 +31,6 @@ export default function Libros() {
     try {
       const { data } = await librosApi.listar();
       setLibros(data);
-      // Extraer géneros únicos del backend para los chips
       const generosUnicos = [...new Set(data.map(l => l.genero).filter(Boolean))];
       setGeneros(['Todos', ...generosUnicos]);
     } catch (err) {
@@ -85,7 +84,7 @@ export default function Libros() {
               <i className="bi bi-search text-muted" />
             </InputGroup.Text>
             <Form.Control
-              placeholder="Search for titles, authors, or genres..."
+              placeholder="Buscar por títulos, autores o géneros..."
               className="border-start-0 shadow-none"
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
@@ -96,9 +95,9 @@ export default function Libros() {
 
       <Container className="mt-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h4 className="fw-bold m-0" style={{ color: '#1e293b' }}>Catalog Explore</h4>
+          <h4 className="fw-bold m-0" style={{ color: '#1e293b' }}>Explorar Catálogo</h4>
           <span className="text-primary small fw-bold" style={{ cursor: 'pointer' }}>
-            <i className="bi bi-funnel me-1" /> REFINE
+            <i className="bi bi-funnel me-1" /> REFINAR
           </span>
         </div>
 
@@ -107,7 +106,7 @@ export default function Libros() {
           {generos.map(g => (
             <GenreChip 
               key={g} 
-              label={g === 'Todos' ? 'All Genres' : g} 
+              label={g === 'Todos' ? 'Todos los géneros' : g} 
               active={generoActivo === g} 
               onClick={() => handleGenero(g)}
             />
@@ -117,12 +116,12 @@ export default function Libros() {
         {/* ── Filtros de Disponibilidad ─────────────────── */}
         <div className="d-flex gap-2 mb-4">
           <StatusToggle 
-            label="AVAILABLE" color="#10b981" bg="#ecfdf5" 
+            label="DISPONIBLE" color="#10b981" bg="#ecfdf5" 
             active={estadoFiltro === 'DISPONIBLE'}
             onClick={() => setEstadoFiltro(prev => prev === 'DISPONIBLE' ? '' : 'DISPONIBLE')}
           />
           <StatusToggle 
-            label="OUT OF STOCK" color="#ef4444" bg="#fef2f2" 
+            label="AGOTADO" color="#ef4444" bg="#fef2f2" 
             active={estadoFiltro === 'AGOTADO'}
             onClick={() => setEstadoFiltro(prev => prev === 'AGOTADO' ? '' : 'AGOTADO')}
           />
@@ -145,13 +144,86 @@ export default function Libros() {
           <div className="text-center py-5 text-muted">No se encontraron resultados.</div>
         )}
       </Container>
-
-      {/* <BottomNav active="catalog" onNavigate={navigate} /> */}
     </div>
   );
 }
 
-/* ══ Componentes Pequeños (Styled) ════════════════════════ */
+/* ══ Componentes Secundarios ══════════════════════════════ */
+
+function LibroCard({ libro, onClick }) {
+  const disponible = libro.estado === 'DISPONIBLE';
+  const icon = GENRE_ICON[libro.genero] || '📚';
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: '#fff',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,.06)',
+        border: '1px solid #e2e8f0',
+        transition: 'transform 0.2s, box-shadow 0.2s',
+        height: '100%',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,.12)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,.06)';
+      }}
+    >
+      {/* Portada */}
+      <div style={{
+        position: 'relative',
+        height: '160px', // Ajustado un poco para el grid
+        background: 'linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '3rem',
+      }}>
+        {icon}
+        <span style={{
+          position: 'absolute', top: '10px', right: '10px',
+          background: disponible ? '#dcfce7' : '#fee2e2',
+          color: disponible ? '#16a34a' : '#dc2626',
+          fontSize: '0.62rem', fontWeight: 700,
+          letterSpacing: '0.8px', padding: '3px 10px',
+          borderRadius: '20px', textTransform: 'uppercase',
+        }}>
+          {disponible ? 'DISPONIBLE' : 'AGOTADO'}
+        </span>
+      </div>
+
+      {/* Info */}
+      <div style={{ padding: '0.85rem 1rem' }}>
+        <p style={{
+          fontWeight: 700,
+          fontSize: '0.95rem', 
+          color: '#1e293b',
+          marginBottom: '0.25rem', 
+          lineHeight: 1.3,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
+          {libro.titulo}
+        </p>
+        <p style={{ fontSize: '0.78rem', color: '#64748b', fontStyle: 'italic', marginBottom: '0.4rem' }}>
+          {Array.isArray(libro.autores) ? libro.autores.join(', ') : libro.autores}
+        </p>
+        <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: 0 }}>
+          {libro.ejemplaresDisponibles}/{libro.ejemplares} disponibles
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function GenreChip({ label, active, onClick }) {
   return (
