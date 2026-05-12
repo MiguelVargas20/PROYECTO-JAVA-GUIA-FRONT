@@ -1,6 +1,6 @@
 import { Card, Button } from 'react-bootstrap';
 
-const BookCard = ({ book }) => {
+const LibroCard = ({ book }) => {
   return (
     <Card className="h-100 border-0 shadow-sm hover-up" style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
       <div className="img-container" style={{ height: '250px', overflow: 'hidden' }}>
@@ -33,4 +33,4 @@ const BookCard = ({ book }) => {
   );
 };
 
-export default BookCard;
+export default LibroCard;
