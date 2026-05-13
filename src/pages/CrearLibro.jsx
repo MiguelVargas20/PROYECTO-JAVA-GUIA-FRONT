@@ -6,9 +6,6 @@ import { librosApi } from '../api';
 /**
  * CREAR LIBRO — ruta protegida /admin/libros/crear
  * Solo accesible para ADMINISTRADOR
- *
- * LibroDto: { titulo, autores[], genero, editorial, anioPub,
- *             ejemplares, ejemplaresDisponibles, estado }
  */
 
 const GENEROS = [
@@ -21,19 +18,18 @@ export default function CrearLibro() {
   const navigate = useNavigate();
 
   const [titulo,       setTitulo]       = useState('');
-  const [autores,      setAutores]      = useState(['']);   // Lista dinámica
+  const [autores,      setAutores]      = useState(['']); 
   const [genero,       setGenero]       = useState('');
   const [editorial,    setEditorial]    = useState('');
   const [anioPub,      setAnioPub]      = useState('');
   const [ejemplares,   setEjemplares]   = useState('');
   const [disponibles,  setDisponibles]  = useState('');
-  const [disponible,   setDisponible]   = useState(true);  // toggle estado
+  const [disponible,   setDisponible]   = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
   const [exito,   setExito]   = useState('');
 
-  /* ── Manejo de autores dinámicos ────────────────────── */
   const handleAutorChange = (index, value) => {
     const nuevos = [...autores];
     nuevos[index] = value;
@@ -43,21 +39,19 @@ export default function CrearLibro() {
   const agregarAutor = () => setAutores(prev => [...prev, '']);
 
   const eliminarAutor = (index) => {
-    if (autores.length === 1) return; // mínimo 1
+    if (autores.length === 1) return;
     setAutores(prev => prev.filter((_, i) => i !== index));
   };
 
-  /* ── Submit ─────────────────────────────────────────── */
   const handleGuardar = async (e) => {
     e.preventDefault();
     setError('');
     setExito('');
 
-    // Validaciones básicas
     const autoresFiltrados = autores.filter(a => a.trim() !== '');
-    if (!titulo.trim())             return setError('El título es requerido.');
+    if (!titulo.trim())                 return setError('El título es requerido.');
     if (autoresFiltrados.length === 0) return setError('Agrega al menos un autor.');
-    if (!genero)                    return setError('Selecciona un género.');
+    if (!genero)                        return setError('Selecciona un género.');
     if (!ejemplares || ejemplares < 1) return setError('Ingresa el total de ejemplares.');
     if (parseInt(disponibles) > parseInt(ejemplares))
       return setError('Los disponibles no pueden superar el total.');
@@ -91,7 +85,7 @@ export default function CrearLibro() {
       <Container className="py-5">
         <Row className="g-5 align-items-start">
 
-          {/* ── Columna izquierda: info decorativa ─────── */}
+
           <Col md={4}>
             <h1 style={{
               fontFamily: 'var(--font-serif)',
@@ -101,11 +95,12 @@ export default function CrearLibro() {
               lineHeight: 1.2,
               marginBottom: '1rem',
             }}>
-              Archive New Volume
+              Agregar Libro
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '2rem' }}>
-              Expand the collection of the Athenaeum. Ensure all metadata is
-              accurate to preserve the integrity of our digital sanctuary.
+              Utiliza este formulario para dar de alta nuevas obras en el catálogo. 
+              Una ficha técnica precisa facilita que los lectores localicen el material 
+              y mantiene actualizado el inventario de la biblioteca.
             </p>
 
             {/* Preview visual */}
@@ -119,10 +114,12 @@ export default function CrearLibro() {
               justifyContent: 'center',
               gap: '0.75rem',
               color: '#94a3b8',
+              textAlign: 'center',
+              padding: '20px'
             }}>
               <i className="bi bi-book" style={{ fontSize: '3rem' }} />
               <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                {titulo || 'Book Archive Visual'}
+                {titulo || 'Vista Previa del Libro'}
               </span>
               {autores[0] && (
                 <span style={{ fontSize: '0.75rem' }}>
@@ -141,12 +138,11 @@ export default function CrearLibro() {
               border: '1px solid #e2e8f0',
               boxShadow: '0 4px 16px rgba(0,0,0,.06)',
             }}>
-              {/* Header */}
               <p style={{
                 fontSize: '0.7rem', fontWeight: 700, letterSpacing: '1.5px',
                 color: '#2563eb', textTransform: 'uppercase', marginBottom: '0.5rem',
               }}>
-                BIBLIOGRAPHIC DETAILS
+                DETALLES BIBLIOGRÁFICOS
               </p>
               <hr style={{ borderColor: '#e2e8f0', marginBottom: '1.75rem' }} />
 
@@ -155,24 +151,22 @@ export default function CrearLibro() {
 
               <Form onSubmit={handleGuardar} noValidate>
 
-                {/* Título */}
                 <Form.Group className="mb-4">
-                  <CampoLabel label="Title" />
+                  <CampoLabel label="Título" />
                   <Form.Control
-                    placeholder="The Principles of Mathematical Analysis"
+                    placeholder="Ej: El Principio de Análisis Matemático"
                     value={titulo}
                     onChange={e => setTitulo(e.target.value)}
                     className="shadow-none campo-perfil"
                   />
                 </Form.Group>
 
-                {/* Autores dinámicos */}
                 <Form.Group className="mb-4">
-                  <CampoLabel label="Authors" />
+                  <CampoLabel label="Autores" />
                   {autores.map((autor, i) => (
                     <div key={i} className="d-flex gap-2 mb-2">
                       <Form.Control
-                        placeholder="Walter Rudin"
+                        placeholder="Nombre del autor"
                         value={autor}
                         onChange={e => handleAutorChange(i, e.target.value)}
                         className="shadow-none campo-perfil"
@@ -197,29 +191,28 @@ export default function CrearLibro() {
                       padding: '4px 0', display: 'flex', alignItems: 'center', gap: '4px',
                     }}
                   >
-                    <i className="bi bi-plus-circle" /> Add Author
+                    <i className="bi bi-plus-circle" /> Añadir Autor
                   </button>
                 </Form.Group>
 
-                {/* Género + Editorial */}
                 <Row className="mb-4 g-3">
                   <Col md={6}>
-                    <CampoLabel label="Genre" />
+                    <CampoLabel label="Género" />
                     <Form.Select
                       value={genero}
                       onChange={e => setGenero(e.target.value)}
                       className="shadow-none campo-perfil"
                     >
-                      <option value="">Select genre...</option>
+                      <option value="">Selecciona un género...</option>
                       {GENEROS.map(g => (
                         <option key={g} value={g}>{g}</option>
                       ))}
                     </Form.Select>
                   </Col>
                   <Col md={6}>
-                    <CampoLabel label="Publisher" />
+                    <CampoLabel label="Editorial" />
                     <Form.Control
-                      placeholder="McGraw-Hill Education"
+                      placeholder="Nombre de la editorial"
                       value={editorial}
                       onChange={e => setEditorial(e.target.value)}
                       className="shadow-none campo-perfil"
@@ -227,12 +220,11 @@ export default function CrearLibro() {
                   </Col>
                 </Row>
 
-                {/* Año + Total + Disponibles */}
                 <Row className="mb-4 g-3">
                   <Col md={4}>
-                    <CampoLabel label="Publication Year" />
+                    <CampoLabel label="Año de Publicación" />
                     <Form.Control
-                      type="number" placeholder="1976"
+                      type="number" placeholder="Ej: 1976"
                       min="1000" max={new Date().getFullYear()}
                       value={anioPub}
                       onChange={e => setAnioPub(e.target.value)}
@@ -240,9 +232,9 @@ export default function CrearLibro() {
                     />
                   </Col>
                   <Col md={4}>
-                    <CampoLabel label="Total Copies" />
+                    <CampoLabel label="Ejemplares Totales" />
                     <Form.Control
-                      type="number" placeholder="12" min="1"
+                      type="number" placeholder="0" min="1"
                       value={ejemplares}
                       onChange={e => {
                         setEjemplares(e.target.value);
@@ -252,9 +244,9 @@ export default function CrearLibro() {
                     />
                   </Col>
                   <Col md={4}>
-                    <CampoLabel label="Initial Availability" />
+                    <CampoLabel label="Disponibilidad Inicial" />
                     <Form.Control
-                      type="number" placeholder="10" min="0"
+                      type="number" placeholder="0" min="0"
                       value={disponibles}
                       onChange={e => setDisponibles(e.target.value)}
                       className="shadow-none campo-perfil"
@@ -262,7 +254,6 @@ export default function CrearLibro() {
                   </Col>
                 </Row>
 
-                {/* Toggle estado */}
                 <div style={{
                   background: '#f8fafc',
                   borderRadius: '12px',
@@ -277,10 +268,10 @@ export default function CrearLibro() {
                     <i className="bi bi-info-circle" style={{ color: '#2563eb' }} />
                     <div>
                       <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '2px', color: 'var(--navy)' }}>
-                        Initial Status
+                        Estado Inicial
                       </p>
                       <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: 0 }}>
-                        Set whether the book is immediately listable.
+                        Define si el libro estará disponible para préstamo inmediatamente.
                       </p>
                     </div>
                   </div>
@@ -300,12 +291,11 @@ export default function CrearLibro() {
                   </div>
                 </div>
 
-                {/* Separador + Botones */}
                 <hr style={{ borderColor: '#e2e8f0', marginBottom: '1.5rem' }} />
 
                 <div className="d-flex align-items-center justify-content-between">
                   <p style={{ fontSize: '0.75rem', color: '#94a3b8', fontStyle: 'italic', marginBottom: 0 }}>
-                    All catalog entries are subject to editorial review.
+                    Todas las entradas del catálogo están sujetas a revisión.
                   </p>
                   <div className="d-flex gap-2">
                     <Button
@@ -314,7 +304,7 @@ export default function CrearLibro() {
                       style={{ borderRadius: '10px', fontWeight: 600 }}
                       disabled={loading}
                     >
-                      Cancel
+                      Cancelar
                     </Button>
                     <Button
                       type="submit"
